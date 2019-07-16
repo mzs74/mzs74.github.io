@@ -15,7 +15,7 @@ var searchFunc = function(path, search_id, content_id) {
             var $input = document.getElementById(search_id);
             var $resultContent = document.getElementById(content_id);
             $input.addEventListener('input', function(){
-                var str='<ul class=\"search-result-list\">';
+                var str='<ul class=\"search-result-list\">';                
                 var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
                 $resultContent.innerHTML = "";
                 if (this.value.trim().length <= 0) {
@@ -51,30 +51,6 @@ var searchFunc = function(path, search_id, content_id) {
                     // show search results
                     if (isMatch) {
                         str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
-                        var content = data.content.trim().replace(/<[^>]+>/g,"");
-                        if (first_occur >= 0) {
-                            // cut out 100 characters
-                            var start = first_occur - 30;
-                            var outLength = 78;
-                            if(start < 0){
-                                start = 0;
-                            }
-                            if (start + outLength > content.length){
-                                if(content.length < outLength){
-                                    outLength = content.length - start;
-                                }else{
-                                    start = content.length - outLength;
-                                }
-                            }
-                            var match_content = content.substr(start, outLength);
-                            // highlight all keywords
-                            keywords.forEach(function(keyword){
-                                var regS = new RegExp(keyword, "gi");
-                                match_content = match_content.replace(regS, "<em class=\"search-keyword\">"+keyword+"</em>");
-                            });
-
-                            str += "<p class=\"search-result\">" + match_content +"...</p>"
-                        }
                         str += "</li>";
                     }
                 });
@@ -84,3 +60,19 @@ var searchFunc = function(path, search_id, content_id) {
         }
     });
 }
+
+$(document).on('click focus', '.header-search-btn', function() {
+    $('.search').addClass('show');
+}).on('click', '.search-close', function() {
+    $('.search').removeClass('show');
+    $(".search-input").val("");
+    $("#local-search-result").empty();
+}).on('keydown', function(e) {
+    switch (e.keyCode) {
+        case 27:
+            $('.search').removeClass('show');
+            $(".search-input").val("");
+            $("#local-search-result").empty();
+            break;
+    }
+})
